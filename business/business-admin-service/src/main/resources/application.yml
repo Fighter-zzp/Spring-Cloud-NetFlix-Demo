@@ -1,0 +1,45 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: business-admin
+  zipkin:
+    base-url: http://192.168.247.145:9411
+  cloud:
+    config:
+      # 配置服务中心的地址
+      uri: http://localhost:8888
+      # 配置文件名称的前缀
+      name: config-client
+      # 配置仓库的分支
+      label: master
+      # 配置文件的环境标识（dev，test，prod）
+      profile: dev
+
+# 增加健康检查配置
+# 这里的目的是开启 actuator/refresh 接口用于刷新配置
+management:
+  endpoint:
+    shutdown:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+eureka:
+  instance:
+    hostname: localhost
+    # 增加用于集群的配置，集群名为 business，与 Turbine 的配置匹配
+    metadata-map:
+      cluster: business
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+
+server:
+  port: 11000
+
+# 开启hystrix方式的熔断器
+feign:
+  hystrix:
+    enabled: true
